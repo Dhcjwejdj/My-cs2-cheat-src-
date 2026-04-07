@@ -149,7 +149,7 @@ static void DrawSliderTrack(const char* label, float frac, bool act, bool hov,
     const float gr = act ? grab_r : (hov ? grab_r - 0.5f : grab_r - 1.5f);
     const float gy = tp.y + bar_h * 0.5f;
     // Shadow
-    dl->AddCircleFilled(ImVec2(grab_x, gy + 1.f), gr + 0.5f, IM_COL32(0, 0, 0, 80), 14);
+    dl->AddCircleFilled(ImVec2(grab_x, gy + 1.f), gr + 0.5f, IM_COL32(8, 8, 8, 80), 14);
     // Fill
     dl->AddCircleFilled(ImVec2(grab_x, gy), gr,
         act ? P::U(P::AcHov) : P::U(P::Ac), 14);
@@ -418,12 +418,23 @@ void Menu::Draw()
     ImGui::PopStyleVar(2);
 
     const float ww = ImGui::GetWindowWidth();
+    const float wh = ImGui::GetWindowHeight();
+
+    // Anti-COLORKEY backing: LWA_COLORKEY makes every exact RGB(0,0,0) pixel
+    // transparent.  The rounded window corners produce anti-aliased edge pixels
+    // that blend to pure black against the clear colour, causing the desktop /
+    // game to bleed through.  A solid (non-rounded) rectangle on the background
+    // draw list ensures those edge pixels blend to Bg1 instead of to black.
+    {
+        const ImVec2 wp = ImGui::GetWindowPos();
+        ImGui::GetBackgroundDrawList()->AddRectFilled(
+            wp, ImVec2(wp.x + ww, wp.y + wh), P::U(P::Bg1));
+    }
 
     // Outer glow border
     {
         ImDrawList* dl = ImGui::GetWindowDrawList();
         const ImVec2 wp = ImGui::GetWindowPos();
-        const float  wh = ImGui::GetWindowHeight();
         dl->AddRect(wp, ImVec2(wp.x + ww, wp.y + wh), P::UA(P::Ac, 0.28f), 10.f, 0, 1.f);
     }
 

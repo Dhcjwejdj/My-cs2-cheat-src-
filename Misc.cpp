@@ -108,7 +108,7 @@ namespace {
                 g_Config.misc.punch_dot_color.b, 90), 1.f);
 
         // Black shadow ring
-        dl->AddCircleFilled(ImVec2(dot_x, dot_y), 5.5f, IM_COL32(0, 0, 0, 200), 10);
+        dl->AddCircleFilled(ImVec2(dot_x, dot_y), 5.5f, IM_COL32(8, 8, 8, 200), 10);
         // Coloured dot
         dl->AddCircleFilled(ImVec2(dot_x, dot_y), 4.f,
             IM_COL32(g_Config.misc.punch_dot_color.r,
@@ -206,7 +206,7 @@ namespace {
         const float th = (float)std::max(1, g_Config.misc.crosshair_thick);
         const ImU32 col = IM_COL32(g_Config.misc.crosshair_color.r, g_Config.misc.crosshair_color.g,
             g_Config.misc.crosshair_color.b, g_Config.misc.crosshair_color.a);
-        const ImU32 out = IM_COL32(0, 0, 0, 160);
+        const ImU32 out = IM_COL32(8, 8, 8, 160);
         auto line = [&](float x1, float y1, float x2, float y2) {
             dl->AddLine(ImVec2(x1, y1), ImVec2(x2, y2), out, th + 2.f);
             dl->AddLine(ImVec2(x1, y1), ImVec2(x2, y2), col, th);

@@ -162,7 +162,7 @@ namespace ui {
 template <typename Style>
 void draw::text(float x, float y, std::string_view value, rgba color, const font* fnt) {
     if constexpr (std::is_same_v<Style, tstyles::outlined>) {
-        const rgba shadow{ 8, 8, 8, color.a }; // NOT pure black: (0,0,0) is the LWA_COLORKEY transparent color
+        const rgba shadow{ 16, 16, 16, color.a }; // NOT pure black: (0,0,0) is the LWA_COLORKEY transparent color — 16 gives better safety margin than 8
         draw::text(x - 1.0f, y, value, shadow, fnt);
         draw::text(x + 1.0f, y, value, shadow, fnt);
         draw::text(x, y - 1.0f, value, shadow, fnt);
