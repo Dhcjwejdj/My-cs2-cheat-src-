@@ -106,26 +106,42 @@ void Triggerbot::Run(Memory& mem, uintptr_t client)
     if (obs && mem.Read<int>(obs + schemas::m_iObserverMode) != 0) return;
 
     if (g_Config.triggerbot.visible_only) {
-        const bool spotted = mem.Read<bool>(
-            target_pawn + schemas::m_entitySpottedState + schemas::m_bSpotted);
-        if (!spotted) return;
+        const uintptr_t st = target_pawn + schemas::m_entitySpottedState;
+        const bool spotted = mem.Read<bool>(st + schemas::m_bSpotted);
+        if (!spotted) {
+            // Also check the spotted-by mask (matches aimbot's IsVisible logic)
+            const bool spotted_by_mask =
+                (mem.Read<uint32_t>(st + schemas::m_bSpottedByMask) |
+                 mem.Read<uint32_t>(st + schemas::m_bSpottedByMask + 4)) != 0;
+            if (!spotted_by_mask) return;
+        }
     }
 
     static uintptr_t s_last_target = 0;
     static ULONGLONG s_aim_start = 0;
-    static bool      s_fired = false;
+    static ULONGLONG s_last_fire = 0;
+    static bool      s_first_shot = true;
 
     if (target_pawn != s_last_target) {
         s_last_target = target_pawn;
         s_aim_start = GetTickCount64();
-        s_fired = false;
+        s_last_fire = 0;
+        s_first_shot = true;
     }
 
-    if (s_fired) return;
+    const ULONGLONG now = GetTickCount64();
 
-    const ULONGLONG dwell = GetTickCount64() - s_aim_start;
-    if (dwell < static_cast<ULONGLONG>(g_Config.triggerbot.delay)) return;
-
-    SendClick();
-    s_fired = true;
+    if (s_first_shot) {
+        // First shot: respect the initial delay before firing
+        if (now - s_aim_start < static_cast<ULONGLONG>(g_Config.triggerbot.delay)) return;
+        SendClick();
+        s_last_fire = now;
+        s_first_shot = false;
+    }
+    else {
+        // Subsequent shots: use shots_delay between each shot
+        if (now - s_last_fire < static_cast<ULONGLONG>(g_Config.triggerbot.shots_delay)) return;
+        SendClick();
+        s_last_fire = now;
+    }
 }
