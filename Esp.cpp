@@ -170,7 +170,7 @@ namespace {
     static void DrawCornerBox(ImDrawList* dl, float x, float y, float w, float h,
         const draw::rgba& col)
     {
-        const ImU32 c = ToImU32(col), sh = IM_COL32(0, 0, 0, 100);
+        const ImU32 c = ToImU32(col), sh = IM_COL32(8, 8, 8, 100);
         const float lw = std::min(w, h) * 0.22f, th = 2.f, r = x + w, b = y + h;
         auto L = [&](float x1, float y1, float x2, float y2) {
             dl->AddLine(ImVec2(x1 + 1, y1 + 1), ImVec2(x2 + 1, y2 + 1), sh, th);
@@ -217,7 +217,7 @@ namespace {
     {
         const float pct = std::clamp(val / (float)max, 0.f, 1.f);
         const float bh = h * pct, bx = right_side ? x + 4.f : x - 7.f;
-        draw::rect(bx, y, 5.f, h, draw::rgba(0, 0, 0, 160), 1.f);
+        draw::rect(bx, y, 5.f, h, draw::rgba(8, 8, 8, 160), 1.f);
         draw::rect_filled(bx + 1.f, y + h - bh, 3.f, bh, color);
     }
 
@@ -294,7 +294,7 @@ namespace {
         const ImU32 jc = IM_COL32(g_Config.esp.wireframe_color.r,
             g_Config.esp.wireframe_color.g,
             g_Config.esp.wireframe_color.b, 255);
-        const ImU32 sh_col = IM_COL32(0, 0, 0, 120);
+        const ImU32 sh_col = IM_COL32(8, 8, 8, 120);
 
         for (const auto& pair : SKELETON) {
             Vector3 b1, b2;
