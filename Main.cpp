@@ -208,10 +208,14 @@ int main() {
             snprintf(fps_buf, sizeof(fps_buf), "%.1f fps", g_fps);
 
             ImGui::SetNextWindowPos(ImVec2(10.f, 10.f), ImGuiCond_FirstUseEver);
-            ImGui::SetNextWindowBgAlpha(0.82f);
-            ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.07f, 0.07f, 0.10f, 0.92f));
-            ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.55f, 0.10f, 0.18f, 0.90f));
+            // Use fully opaque background and border.
+            // LWA_COLORKEY makes RGB(0,0,0) transparent — semi-transparent
+            // fills blend to near-black pixels that bleed through the overlay.
+            ImGui::SetNextWindowBgAlpha(1.0f);
+            ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.07f, 0.07f, 0.10f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.55f, 0.10f, 0.18f, 1.0f));
             ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 1.f);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.f);
             if (ImGui::Begin("##info", nullptr,
                 ImGuiWindowFlags_NoTitleBar |
                 ImGuiWindowFlags_NoResize |
@@ -227,7 +231,7 @@ int main() {
                 }
             }
             ImGui::End();
-            ImGui::PopStyleVar();
+            ImGui::PopStyleVar(2);
             ImGui::PopStyleColor(2);
         }
 
@@ -257,8 +261,8 @@ int main() {
         else if (!g_cheatLoaded && g_gameReady) {
             ImGui::SetNextWindowPos(ImVec2(sw * 0.5f, sh * 0.5f),
                 ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-            ImGui::SetNextWindowBgAlpha(0.72f);
-            ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.05f, 0.05f, 0.08f, 0.90f));
+            ImGui::SetNextWindowBgAlpha(1.0f);
+            ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.05f, 0.05f, 0.08f, 1.0f));
             if (ImGui::Begin("##hint", nullptr,
                 ImGuiWindowFlags_NoTitleBar |
                 ImGuiWindowFlags_NoResize |
